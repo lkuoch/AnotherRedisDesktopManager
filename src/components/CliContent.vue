@@ -11,7 +11,7 @@ import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 
 export default {
   props: {
-    content: {type: String, default: () => {}},
+    content: { type: String, default: () => {} },
   },
   created() {
     // listen font family change and reset options
@@ -27,11 +27,11 @@ export default {
   methods: {
     changeFont(fontFamily) {
       this.monacoEditor && this.monacoEditor.updateOptions({
-        fontFamily: fontFamily,
+        fontFamily,
       });
     },
     scrollToBottom() {
-      this.monacoEditor.revealLine(this.monacoEditor.getModel().getLineCount())
+      this.monacoEditor.revealLine(this.monacoEditor.getModel().getLineCount());
     },
   },
 
@@ -41,7 +41,7 @@ export default {
       {
         value: this.content,
         theme: 'vs-dark',
-        language: "plaintext",
+        language: 'plaintext',
         links: false,
         readOnly: true,
         cursorStyle: 'underline-thin',
@@ -78,7 +78,7 @@ export default {
           verticalScrollbarSize: '9px',
           horizontalScrollbarSize: '9px',
         },
-      }
+      },
     );
 
     // hide tooltip in readonly mode
@@ -91,7 +91,7 @@ export default {
     this.monacoEditor.dispose();
     this.$bus.$off('fontInited', this.changeFont);
   },
-}
+};
 </script>
 
 <style type="text/css">
@@ -100,7 +100,7 @@ export default {
     height: calc(100vh - 160px);
     clear: both;
     overflow: hidden;
-    background: #263238;
+    background: #303446;
     border: 1px solid #e4e7ed;
     border-bottom: 0px;
     border-radius: 4px 4px 0 0;
@@ -129,7 +129,7 @@ export default {
     border-radius: 4px;
   }
   .dark-mode .cli-content-container .monaco-editor .scrollbar {
-    background: #425057;
+    background: #303446;
   }
   .cli-content-container .monaco-editor .scrollbar:hover {
     background: #e0e0dd;
@@ -157,8 +157,8 @@ export default {
     background-color: inherit;
   }
 
-  .cli-content-container .monaco-editor-con .monaco-editor, 
-  .cli-content-container .monaco-editor-con .monaco-editor-background, 
+  .cli-content-container .monaco-editor-con .monaco-editor,
+  .cli-content-container .monaco-editor-con .monaco-editor-background,
   .cli-content-container .monaco-editor-con .monaco-editor .inputarea.ime-input {
     background-color: inherit;
   }

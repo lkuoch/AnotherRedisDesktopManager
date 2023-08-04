@@ -45,14 +45,13 @@ export default {
     // restore side bar width
     this.restoreSideBarWidth();
   },
-  components: {Aside, Tabs, UpdateCheck},
+  components: { Aside, Tabs, UpdateCheck },
   methods: {
     bindSideBarDrag() {
       const that = this;
       const dragPointer = document.getElementById('drag-resize-pointer');
 
-      function mousemove(e)
-      {
+      function mousemove(e) {
         const mouseX = e.x;
         const dragSideWidth = mouseX - 17;
 
@@ -61,8 +60,7 @@ export default {
         }
       }
 
-      function mouseup(e)
-      {
+      function mouseup(e) {
         document.documentElement.removeEventListener('mousemove', mousemove);
         document.documentElement.removeEventListener('mouseup', mouseup);
 
@@ -78,13 +76,13 @@ export default {
       });
     },
     restoreSideBarWidth() {
-      let sideWidth = localStorage.sideWidth;
+      const { sideWidth } = localStorage;
       sideWidth && (this.sideWidth = sideWidth);
     },
     openHrefInBrowser() {
-      const shell = require('electron').shell;
+      const { shell } = require('electron');
 
-      document.addEventListener('click', function (event) {
+      document.addEventListener('click', (event) => {
         const ele = event.target;
 
         if (ele && (ele.nodeName.toLowerCase() === 'a') && ele.href.startsWith('http')) {
@@ -105,9 +103,9 @@ export default {
     },
     initZoom() {
       let zoomFactor = this.$storage.getSetting('zoomFactor');
-      zoomFactor = zoomFactor ? zoomFactor : 1.0;
+      zoomFactor = zoomFactor || 1.0;
 
-      const {webFrame} = require('electron');
+      const { webFrame } = require('electron');
       webFrame.setZoomFactor(zoomFactor);
     },
   },
@@ -160,8 +158,13 @@ a {
   background: #eaeaea;
   border-radius: 4px;
 }
+
+.dark-mode {
+  background: #303446 !important;
+}
+
 .dark-mode ::-webkit-scrollbar-track {
-  background: #425057;
+  background: #303446;
 }
 /*track hover*/
 ::-webkit-scrollbar-track:hover {

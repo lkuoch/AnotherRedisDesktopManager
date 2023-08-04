@@ -49,6 +49,13 @@ function createWindow() {
     width: lastWinStage.width,
     height: lastWinStage.height,
     icon: `${__dirname}/icons/icon.png`,
+    transparent: true,
+    opacity: 0.93,
+    frame: false,
+    vibrancy: 'ultra-dark',
+    titleBarStyle: 'hidden',
+    visualEffectState: 'active',
+    backgroundColor: '#303446',
     autoHideMenuBar: true,
     webPreferences: {
       nodeIntegration: true,

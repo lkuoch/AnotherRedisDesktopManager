@@ -71,7 +71,7 @@
 </template>
 
 <script type="text/javascript">
-import VueEasyTree from "@qii404/vue-easy-tree";
+import VueEasyTree from '@qii404/vue-easy-tree';
 
 export default {
   data() {
@@ -85,19 +85,19 @@ export default {
       treeNodesOverflow: 20e4, // 200k
       keyNodes: [],
       props: {
-        label: "name",
-        children: "children",
+        label: 'name',
+        children: 'children',
       },
       expandedKeys: new Set(),
       checkedKeys: [],
     };
   },
   props: ['client', 'config', 'keyList'],
-  components: {VueEasyTree},
+  components: { VueEasyTree },
   computed: {
     separator() {
       return this.config.separator === undefined ? ':' : this.config.separator;
-    }
+    },
   },
   methods: {
     rightClick(event, data, node) {
@@ -120,7 +120,7 @@ export default {
         menu.style.left = `${event.clientX}px`;
         menu.style.top = `${top}px`;
 
-        document.addEventListener("click", this.hideAllMenus, {once: true});
+        document.addEventListener('click', this.hideAllMenus, { once: true });
       });
     },
     nodeClick(data, node, component, event) {
@@ -164,7 +164,7 @@ export default {
         return;
       }
 
-      const data = node.data;
+      const { data } = node;
       this.$refs.veTree.setCurrentKey(node.key);
 
       // up & down, key node
@@ -175,7 +175,7 @@ export default {
     showMultiSelect() {
       this.multiOperating = true;
       this.$refs.treeWrapper.classList.add('show-checkbox');
-      
+
       // adjust vtree height
       this.vtreeHeight = this.vtreeHeightMutiple;
     },
@@ -189,21 +189,21 @@ export default {
       this.vtreeHeight = this.vtreeHeightRaw;
     },
     hideAllMenus() {
-      let menus = document.querySelectorAll('.key-list-right-menu');
+      const menus = document.querySelectorAll('.key-list-right-menu');
 
       if (menus.length === 0) {
         return;
       }
 
       for (const menu of menus) {
-        menu.style.display='none';
+        menu.style.display = 'none';
       }
     },
     clickItem(type) {
-      switch(type) {
+      switch (type) {
         // copy key name
         case 'copy': {
-          const clipboard = require('electron').clipboard;
+          const { clipboard } = require('electron');
           clipboard.writeText(this.rightClickNode.data.name);
           break;
         }
@@ -214,7 +214,7 @@ export default {
             return this.deleteBatch();
           }
 
-          let keyBuffer = Buffer.from(this.rightClickNode.data.nameBuffer.data);
+          const keyBuffer = Buffer.from(this.rightClickNode.data.nameBuffer.data);
 
           this.client.del(keyBuffer).then((reply) => {
             if (reply == 1) {
@@ -224,11 +224,10 @@ export default {
               });
 
               this.$bus.$emit('refreshKeyList', this.client, keyBuffer, 'del');
-            }
-            else {
+            } else {
               this.$message.error(this.$t('message.delete_failed'));
             }
-          }).catch(e => {this.$message.error(e.message);});
+          }).catch((e) => { this.$message.error(e.message); });
           break;
         }
         // select multiple
@@ -243,7 +242,7 @@ export default {
         }
         // delete whole folder
         case 'delete_folder': {
-          let rule = {pattern: [this.rightClickNode.data.fullName]};
+          const rule = { pattern: [this.rightClickNode.data.fullName] };
           this.$bus.$emit('openDelBatch', this.client, this.config.connectionName, rule);
           break;
         }
@@ -263,10 +262,10 @@ export default {
       return this.$refs.veTree.setCheckedAll(checked);
     },
     deleteBatch() {
-      let rule = {key: [], pattern: []};
-      let checkedNodes = this.$refs.veTree.getCheckedNodes();
+      const rule = { key: [], pattern: [] };
+      const checkedNodes = this.$refs.veTree.getCheckedNodes();
 
-      for (let node of checkedNodes) {
+      for (const node of checkedNodes) {
         // key node
         if (!node.children) {
           rule.key.push(Buffer.from(node.nameBuffer.data));
@@ -276,15 +275,15 @@ export default {
       this.$bus.$emit('openDelBatch', this.client, this.config.connectionName, rule);
     },
     exportBatch() {
-      let checkedNodes = this.$refs.veTree.getCheckedNodes();
-      let keys = [];
+      const checkedNodes = this.$refs.veTree.getCheckedNodes();
+      const keys = [];
 
       if (!checkedNodes.length) {
         this.$message.warning('Please select keys!');
         return;
       }
 
-      for (let node of checkedNodes) {
+      for (const node of checkedNodes) {
         // key node
         if (!node.children) {
           keys.push(Buffer.from(node.nameBuffer.data));
@@ -296,7 +295,7 @@ export default {
     clickKey(key, newTab = false) {
       this.$bus.$emit('clickedKey', this.client, key, newTab);
     },
-    multipleCheck (node, event) {
+    multipleCheck(node, event) {
       if (!event.shiftKey || !this.lastKey || node.key === this.lastKey) {
         this.lastKey = node.key;
         this.lastY = event.screenY;
@@ -312,7 +311,7 @@ export default {
       const bottomKey = direction == 'up' ? this.lastKey : curKey;
 
       let bottomNode = tree.getNode(bottomKey);
-      let bottomNodeParents = new Set();
+      const bottomNodeParents = new Set();
 
       // get all bottom node parents
       while (bottomNode.parent) {
@@ -321,7 +320,7 @@ export default {
       }
 
       let start = false;
-      let selectedNodes = [];
+      const selectedNodes = [];
 
       // collect all nodes which need to be checked, from bottom to top
       for (let i = tree.dataList.length - 1; i >= 0; i--) {
@@ -332,7 +331,7 @@ export default {
             direction === 'down' && selectedNodes.push(item);
             start = true;
           }
-          
+
           continue;
         }
 
@@ -353,13 +352,13 @@ export default {
             checkRecursive(item, checked);
           }
         }
-      }
+      };
 
-      for (let item of selectedNodes) {
+      for (const item of selectedNodes) {
         if (bottomNodeParents.has(item.key)) {
           continue;
         }
-        
+
         checkRecursive(item, this.lastChecked);
       }
 
@@ -378,7 +377,7 @@ export default {
         // using nextTick to relieve msg missing caused by app stuck
         this.$nextTick(() => {
           this.$message.warning({
-            message: this.$t('message.tree_node_overflow', {num: this.treeNodesOverflow}),
+            message: this.$t('message.tree_node_overflow', { num: this.treeNodesOverflow }),
             duration: 6000,
           });
         });
@@ -387,9 +386,9 @@ export default {
       // backup checked keys
       this.checkedKeys = this.$refs.veTree.getCheckedKeys(true);
 
-      const keyNodes = this.separator ?
-        this.$util.keysToTree(newListCopy, this.separator, this.expandedKeys, this.treeNodesOverflow) :
-        this.$util.keysToList(newListCopy);
+      const keyNodes = this.separator
+        ? this.$util.keysToTree(newListCopy, this.separator, this.expandedKeys, this.treeNodesOverflow)
+        : this.$util.keysToList(newListCopy);
 
       this.keyNodes = keyNodes;
 
@@ -409,7 +408,7 @@ export default {
   created() {
     this.vtreeHeight = this.vtreeHeightRaw;
   },
-}
+};
 </script>
 
 <style>
@@ -456,7 +455,7 @@ export default {
 
 /*node item*/
 .key-list-vtree .el-tree-node {
-  font-size: 14px; 
+  font-size: 14px;
 }
 .key-list-vtree .el-tree-node .el-tree-node__content {
   padding-left: 3px;
@@ -541,8 +540,8 @@ export default {
 }
 /*select\cancel select all col*/
 .key-list-vtree .batch-operate .fixed-col {
-  float: left; 
-  width: 20px; 
+  float: left;
+  width: 20px;
   line-height: 22px;
 }
 /*second col*/
@@ -568,7 +567,7 @@ export default {
   background: #fafafa;
 }
 .dark-mode .key-list-right-menu {
-  background: #263238;
+  background: #303446;
 }
 
 .key-list-right-menu ul {
@@ -583,7 +582,7 @@ export default {
   font-size: 13.4px;
   padding: 6px 10px;
   cursor: pointer;
-  color: #263238;
+  color: #303446;
 }
 .dark-mode .key-list-right-menu ul li {
   color: #fff;
